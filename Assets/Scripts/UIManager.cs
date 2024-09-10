@@ -8,18 +8,29 @@ using UnityEditor;
 #endif
 
 
-public class Menu : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
+    private bool isInMainScene;
+
     public string playerName;
 
-    public static Menu menu;
+    [SerializeField] private TMP_InputField nameField;
 
-    [SerializeField] public static TMP_InputField nameField;
+    public static UIManager UIManagerScript;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        menu = this;
+        if(UIManagerScript == null)
+        {
+            UIManagerScript = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        isInMainScene = false;
     }
 
     // Update is called once per frame
@@ -31,12 +42,17 @@ public class Menu : MonoBehaviour
     //The name of the player is selected
     void NameSelector()
     {
-        playerName = nameField.GetComponent<TMP_InputField>().text;
+        if(isInMainScene == false)
+        {
+            playerName = nameField.text;
+
+        }
     }
 
     //The game starts
     public void StartGame()
     {
+        isInMainScene = true;
         SceneManager.LoadScene(1);
     }
 
